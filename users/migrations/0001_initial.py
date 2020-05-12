@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             name='Profile',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(default='default.jpeg', upload_to='profile_pics')),
+                ('image', models.ImageField(default='https://www.retailx.com/wp-content/uploads/2019/12/iStock-476085198.jpg', upload_to='profile_pics')),
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
