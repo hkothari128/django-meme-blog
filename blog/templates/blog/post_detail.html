@@ -22,10 +22,21 @@
         <h2 class="article-title">{{ object.title }}</h2>
         <div class="row mt-2 mb-2">
             <div class="col-2 ml-auto">
-                {% if user in object.likes.all %}
-                    <a href="{% url 'like-toggle' object.id %}" class="w-100 btn btn-danger"><i class="fa fa-heart fa-2x"></i>{{object.likes.all|length}}</a>
+                <!-- {% if user in object.likes.all %}
+                    <a href="{% url 'like-toggle' object.id %}" data-toggle="liked" class="w-100 btn btn-danger"><i class="fa fa-heart fa-2x"></i>{{object.likes.all|length}}</a>
                 {% else %}            
-                    <a href="{% url 'like-toggle' object.id %}" class="w-100 btn btn-outline-primary"><i class="fa fa-heart fa-2x"></i>{{object.likes.all|length}}</a>
+                    <a href="{% url 'like-toggle' object.id %}" data-toggle="unliked" class="w-100 btn btn-outline-primary"><i class="fa fa-heart fa-2x"></i>{{object.likes.all|length}}</a>
+                {% endif %} -->
+                {% if user in object.likes.all %}
+                    <button onclick="toggleLike(this)" id="like-btn" data-toggle="liked" class="w-100 btn btn-outline-danger">
+                        <i class="fa fa-heart fa-2x"></i>
+                        <span>{{object.likes.all|length}}</span>
+                    </button>
+                {% else %}            
+                    <button onclick="toggleLike(this)" id="like-btn" data-toggle="unliked" class="w-100 btn btn-outline-primary">
+                        <i class="fa fa-heart fa-2x"></i>
+                        <span>{{object.likes.all|length}}</span>
+                    </button>
                 {% endif %}
             </div>                
         </div>
@@ -90,10 +101,27 @@
         }
     }
 
-    function toggleLike( url ) {
+    function toggleLike(elem) {
         var xhttp = new XMLHttpRequest();
-        xhttp.open("GET", url , true);
+        xhttp.open("GET", "{% url 'like-toggle' object.id %}" , true);
         xhttp.send();
+        let button = elem
+        
+        if(button.getAttribute("data-toggle") === "liked") {
+            button.setAttribute("data-toggle", "unliked");
+            button.classList.remove("btn-outline-danger");
+            button.classList.add("btn-outline-primary");
+            let span = button.getElementsByTagName('span')[0]
+            span.innerText = parseInt(span.innerText) - 1;
+        }
+        else {
+            button.setAttribute("data-toggle", "liked");
+            button.classList.remove("btn-outline-primary");
+            button.classList.add("btn-outline-danger");
+            let span = button.getElementsByTagName('span')[0]
+            span.innerText = parseInt(span.innerText) + 1;
+        }
+        
     }
 </script>
     
