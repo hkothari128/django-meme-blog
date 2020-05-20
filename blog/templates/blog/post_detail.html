@@ -1,7 +1,6 @@
 {% extends "blog/base.html" %}
 {% block content %}
-    
-<article class="media content-section">
+<article class="media content-section border-0 ml-auto mr-auto w-75 bg-transparent">
     <img src="{{object.author.profile.image.url}}" class="rounded-circle article-img">
     <div class="media-body">
         <div class="article-metadata">
@@ -21,10 +20,82 @@
              
         </div>
         <h2 class="article-title">{{ object.title }}</h2>
-        <p class="article-content">{{ object.content }}</p>
-    </div>
+        <div class="row mt-2 mb-2">
+            <div class="col-2 ml-auto">
+                {% if user in object.likes.all %}
+                    <a href="{% url 'like-toggle' object.id %}" class="w-100 btn btn-danger"><i class="fa fa-heart fa-2x"></i>{{object.likes.all|length}}</a>
+                {% else %}            
+                    <a href="{% url 'like-toggle' object.id %}" class="w-100 btn btn-outline-primary"><i class="fa fa-heart fa-2x"></i>{{object.likes.all|length}}</a>
+                {% endif %}
+            </div>                
+        </div>
+        <!-- <p class="article-content">{{ object.content }}</p> -->
+        <img class="img-fluid w-100" src="{{ object.content.url }}" alt="">
+        <hr />
+        
+        <hr />
+        <section id="comments">
+            <h5 >Comments:</h5>
+            <article class="media content-section w-90 ml-4 border-0 bg-transparent">
+                {% if user.is_authenticated %}
+                    <img src="{{user.profile.image.url}}" class="rounded-circle mr-2" height="55px" width="55px">                
+                {% endif %}
+                <div class="media-body">
+                    <form action="" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        {% if user.is_authenticated %}
+                        <fieldset class="form-group w-100 h-75">
+                            {{form.content}}                    
+                        </fieldset>
+                        {% endif %}
+                        
+
+                        
+                        <div class="form-group ">
+                            {% if user.is_authenticated %}
+                                <button type="submit" class="btn btn-outline-info ml-auto">Add Comment</button>
+                            {% else %}
+                            <a href="{% url 'login'%}?next={% url 'post-detail' object.id%}#comments" type="submit" class="btn btn-outline-info ml-auto">Add Comment</a>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </article>
+            <a class="btn btn-default" href="{% url 'post-detail' object.id %}#comments">Add comment</a>
+            {% for comment in object.comments.all  %}
+                <article class="media content-section w-90 ml-4 border-0 bg-transparent">
+                    <img src="{{comment.author.profile.image.url}}" class="rounded-circle mr-2" height="55px" width="55px">
+                    <div class="media-body">
+                        <div class="article-metadata">
+                            <a class="mr-2" href="{% url 'user-posts' comment.author.username %}">{{ comment.author }}</a>
+                            <small class="text-muted">{{ comment.date_commented|date:'F d, Y' }}</small>
+                        </div>
+                        <p> {{ comment.content|linebreaks }}</p>
+                    </div>
+                </article>
     
-          
+            {% empty %}
+                <h6 class="text-center mt-4"> No comments for this post</h6>
+            {% endfor %}            
+        </section>
+    </div>      
 </article>
+<script>
+    window.onload = () => {
+        if(window.location.href.split("/").pop()==="#comments") {
+            window.scrollTo({
+                top: document.getElementById('comments').getBoundingClientRect().top,
+                behavior: 'smooth',
+            })
+        }
+    }
+
+    function toggleLike( url ) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", url , true);
+        xhttp.send();
+    }
+</script>
     
 {% endblock content %}

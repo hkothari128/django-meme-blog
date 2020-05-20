@@ -1,17 +1,33 @@
 {% extends "blog/base.html" %}
+
 {% load crispy_forms_tags %}
 {% block content %}
     <div class="content-section">
-        <form action="" method="post">
+        <form action="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">New Post</legend>
                 {{ form|crispy }}
+                <img class="img-fluid w-100" id="preview-image" src="" alt="">
             </fieldset>
             <div class="form-group">
                 <button type="submit" class="btn btn-outline-info">Post</button>
             </div>
         </form>
     </div>
-{% endblock content %}
+    <script>
+        console.log("<___");
+        document.getElementById("id_content").onchange = function () {
+            console.log("CHANGED");
+            var reader = new FileReader();
     
+            reader.onload = function (e) {
+                // get loaded data and render thumbnail.
+                document.getElementById("preview-image").src = e.target.result;
+            };
+    
+            // read the image file as a data URL.
+            reader.readAsDataURL(this.files[0]);
+        };
+    </script>
+{% endblock content %}
