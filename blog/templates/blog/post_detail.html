@@ -27,17 +27,25 @@
                 {% else %}            
                     <a href="{% url 'like-toggle' object.id %}" data-toggle="unliked" class="w-100 btn btn-outline-primary"><i class="fa fa-heart fa-2x"></i>{{object.likes.all|length}}</a>
                 {% endif %} -->
-                {% if user in object.likes.all %}
-                    <button onclick="toggleLike(this)" id="like-btn" data-toggle="liked" class="w-100 btn btn-outline-danger">
+                {% if user.is_authenticated %}
+                    {% if user in object.likes.all %}
+                        <button onclick="toggleLike(this)" id="like-btn" data-toggle="liked" class="w-100 btn btn-outline-danger">
+                            <i class="fa fa-heart fa-2x"></i>
+                            <span>{{object.likes.all|length}}</span>
+                        </button>
+                    {% else %}            
+                        <button onclick="toggleLike(this)" id="like-btn" data-toggle="unliked" class="w-100 btn btn-outline-primary">
+                            <i class="fa fa-heart fa-2x"></i>
+                            <span>{{object.likes.all|length}}</span>
+                        </button>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'login'%}?next={% url 'post-detail' object.id%}" class="w-100 btn btn-outline-primary">
                         <i class="fa fa-heart fa-2x"></i>
                         <span>{{object.likes.all|length}}</span>
-                    </button>
-                {% else %}            
-                    <button onclick="toggleLike(this)" id="like-btn" data-toggle="unliked" class="w-100 btn btn-outline-primary">
-                        <i class="fa fa-heart fa-2x"></i>
-                        <span>{{object.likes.all|length}}</span>
-                    </button>
+                    </a>
                 {% endif %}
+                
             </div>                
         </div>
         <!-- <p class="article-content">{{ object.content }}</p> -->

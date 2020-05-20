@@ -23,10 +23,18 @@
                                 <i class="fa fa-heart ml-2" ></i>
                             </button>                          
                         {% else %}
-                        <button data-toggle="unliked" onclick="toggleLike(this,'{{post.id}}')" class="btn btn-light w-100">
-                            <span>{{post.likes.all|length}}</span>
-                            <i class="fa fa-heart ml-2" ></i>
-                        </button>                          
+                            {% if user.is_authenticated %}
+                                <button data-toggle="unliked" onclick="toggleLike(this,'{{post.id}}')" class="btn btn-light w-100">
+                                    <span>{{post.likes.all|length}}</span>
+                                    <i class="fa fa-heart ml-2" ></i>
+                                </button>                                                        
+                            {% else %}
+                                <a href="{% url 'login'%}?next={% url 'post-detail' post.id%}" class="btn btn-light w-100">
+                                    <span>{{post.likes.all|length}}</span>
+                                    <i class="fa fa-heart ml-2" ></i>
+                                </a>
+                            {% endif %}
+                            
                         {% endif %}
                     </div>
                     <div class="col-6 mr-auto border-left">                                                                   
