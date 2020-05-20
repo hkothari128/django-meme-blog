@@ -56,13 +56,12 @@
                             {% if user.is_authenticated %}
                                 <button type="submit" class="btn btn-outline-info ml-auto">Add Comment</button>
                             {% else %}
-                            <a href="{% url 'login'%}?next={% url 'post-detail' object.id%}#comments" type="submit" class="btn btn-outline-info ml-auto">Add Comment</a>
+                                <a href="{% url 'login'%}?next={% url 'post-detail' object.id%}#comments" type="submit" class="btn btn-outline-info ml-auto">Add Comment</a>
                             {% endif %}
                         </div>
                     </form>
                 </div>
             </article>
-            <a class="btn btn-default" href="{% url 'post-detail' object.id %}#comments">Add comment</a>
             {% for comment in object.comments.all  %}
                 <article class="media content-section w-90 ml-4 border-0 bg-transparent">
                     <img src="{{comment.author.profile.image.url}}" class="rounded-circle mr-2" height="55px" width="55px">
