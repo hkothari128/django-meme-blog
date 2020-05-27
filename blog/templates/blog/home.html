@@ -2,18 +2,56 @@
 {% extends "blog/base.html" %}
 {% block content %}
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-4 order-md-8">
+                    
+        {% if user.is_authenticated %}
+        
+        <a class="col-md-12 btn btn-secondary mb-2" href="{% url 'post-create' %}">New Post</a>
+        
+        {% endif %}
+            
+        <!-- <div class="content-section">
+            <h3>Shomeme</h3>
+            <hr />
+            <p>Shomeme is a meme blog website where you can post and <em>show memes</em> to the world. An upcoming feature will include private groups/pages where only members can view the memes. So get creative and have fun!</p>
+        </div> -->
+        <div class="content-section">
+            <h3>Random Dad Joke</h3>
+            <hr />
+            <p>{{dadjoke}}</p>
+        </div>
+        <!-- <div class="content-section">
+            <h3>Our Sidebar</h3>
+            <p class='text-muted'>You can put any information here you'd like.
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-light">Latest Posts</li>
+                    <li class="list-group-item list-group-item-light">Announcements</li>
+                    <li class="list-group-item list-group-item-light">Calendars</li>
+                    <li class="list-group-item list-group-item-light">etc</li>
+                </ul>
+            </p>
+        </div> -->
+    </div>
+    <div class="col-md-8 order-md-4">
         {% for post in posts %}
-        <article class="media content-section">
-            <img src="{{post.author.profile.image.url}}" class="rounded-circle article-img">
-            <div class="media-body">
-                <div class="article-metadata">
-                    <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
-                    <small class="text-muted">{{ post.date_posted|date:'F d, Y' }}</small>
+        <article class="content-section">
+            
+                <div class="article-metadata pl-0 row">
+                    <div class="col-md-1 col-2 mr-2">
+                        <img src="{{post.author.profile.image.url}}" class="rounded-circle article-img profile-preview-img">
+                    </div>
+                    <div class="col-md-10 col-9 pt-1">
+                        <a class="ml-auto" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
+                        <br>
+                        <small class="text-muted ml-auto">{{ post.date_posted|date:'F d, Y' }}</small>
+                    </div>
                 </div>
-                <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
+            
+            <div>
+                
+                <h2 class="article-title post-title"><a  href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
                 <!-- <p class="article-content">{{ post.content }}</p> -->
-                <img class="w-100 h-100" src="{{ post.content.url }}" alt=""/>
+                <img class="w-100 h-100 post-img" src="{{ post.content.url }}" alt=""/>
                 <hr/>
                 <div class="row">
                     <div class="col-6 ml-auto border-right ">                    
@@ -67,27 +105,7 @@
             {% endif %}
         {% endif %}
     </div>
-    <div class="col-md-4">
-                    
-        {% if user.is_authenticated %}
-        
-        <a class="col-md-12 btn btn-secondary mb-2" href="{% url 'post-create' %}">New Post</a>
-        
-        {% endif %}
-            
-        
-        <div class="content-section">
-            <h3>Our Sidebar</h3>
-            <p class='text-muted'>You can put any information here you'd like.
-                <ul class="list-group">
-                    <li class="list-group-item list-group-item-light">Latest Posts</li>
-                    <li class="list-group-item list-group-item-light">Announcements</li>
-                    <li class="list-group-item list-group-item-light">Calendars</li>
-                    <li class="list-group-item list-group-item-light">etc</li>
-                </ul>
-            </p>
-        </div>
-    </div>
+    
 </div>
 <script>
     function toggleLike(elem,id) {

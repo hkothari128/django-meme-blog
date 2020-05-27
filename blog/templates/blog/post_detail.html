@@ -1,18 +1,25 @@
 {% extends "blog/base.html" %}
 {% block content %}
-<article class="media content-section border-0 ml-auto mr-auto w-75 bg-transparent">
-    <img src="{{object.author.profile.image.url}}" class="rounded-circle article-img">
-    <div class="media-body">
+<article class="content-section border-0 bg-transparent">
+    <div class="">
         <div class="article-metadata">
             <div class="row">
                 <div class="col-md-9">
-                    <a class="mr-2" href="{% url 'user-posts' object.author.username %}">{{ object.author }}</a>
-                    <small class="text-muted">{{ object.date_posted|date:'F d, Y' }}</small>
+                    <div class="pl-0 row">
+                        <div class="col-md-1 col-2 mr-2">
+                            <img src="{{object.author.profile.image.url}}" class="rounded-circle article-img profile-preview-img">
+                        </div>
+                        <div class="col-md-10 col-8 pt-1">
+                            <a href="{% url 'user-posts' object.author.username %}">{{ object.author }}</a>
+                            <br>
+                            <small class="text-muted ">{{ object.date_posted|date:'F d, Y' }}</small>
+                        </div>
+                    </div>
                 </div>
                 {% if object.author == user %}
-                <div class="col-md-3 text-right">
-                    <a class="mt-1 mb-1 ml-auto btn btn-sm btn-secondary" href="{% url 'post-update' object.id %}"> Update</a>
-                    <a class="mt-1 mb-1 ml-auto btn btn-sm btn-danger" href="{% url 'post-delete' object.id %}"> Delete</a>
+                <div class="col-md-3 text-md-right">
+                    <a class="mt-1 mb-1 btn btn-sm btn-secondary" href="{% url 'post-update' object.id %}"> Update</a>
+                    <a class="mt-1 mb-1 btn btn-sm btn-danger" href="{% url 'post-delete' object.id %}"> Delete</a>
                 </div>
                 {% endif %} 
             </div>
@@ -20,8 +27,13 @@
              
         </div>
         <h2 class="article-title">{{ object.title }}</h2>
-        <div class="row mt-2 mb-2">
-            <div class="col-2 ml-auto">
+        
+        <!-- <p class="article-content">{{ object.content }}</p> -->
+        <div class="row ">
+            <div class="col-12 order-md-12 mt-2 mb-2">                
+                <img class="img-fluid img-responsive w-100" src="{{ object.content.url }}" alt="">
+            </div>
+            <div class="col-md-2 col-12 order-md-1 ml-auto">
                 <!-- {% if user in object.likes.all %}
                     <a href="{% url 'like-toggle' object.id %}" data-toggle="liked" class="w-100 btn btn-danger"><i class="fa fa-heart fa-2x"></i>{{object.likes.all|length}}</a>
                 {% else %}            
@@ -30,7 +42,7 @@
                 {% if user.is_authenticated %}
                     {% if user in object.likes.all %}
                         <button onclick="toggleLike(this)" id="like-btn" data-toggle="liked" class="w-100 btn btn-outline-danger">
-                            <i class="fa fa-heart fa-2x"></i>
+                            <i class="fa fa-heart fa-sm"></i>
                             <span>{{object.likes.all|length}}</span>
                         </button>
                     {% else %}            
@@ -48,42 +60,40 @@
                 
             </div>                
         </div>
-        <!-- <p class="article-content">{{ object.content }}</p> -->
-        <img class="img-fluid w-100" src="{{ object.content.url }}" alt="">
-        <hr />
         
         <hr />
         <section id="comments">
-            <h5 >Comments:</h5>
-            <article class="media content-section w-90 ml-4 border-0 bg-transparent">
-                {% if user.is_authenticated %}
-                    <img src="{{user.profile.image.url}}" class="rounded-circle mr-2" height="55px" width="55px">                
-                {% endif %}
-                <div class="media-body">
-                    <form action="" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-
-                        {% if user.is_authenticated %}
-                        <fieldset class="form-group w-100 h-75">
-                            {{form.content}}                    
-                        </fieldset>
-                        {% endif %}
-                        
-
-                        
-                        <div class="form-group ">
-                            {% if user.is_authenticated %}
-                                <button type="submit" class="btn btn-outline-info ml-auto">Add Comment</button>
-                            {% else %}
-                                <a href="{% url 'login'%}?next={% url 'post-detail' object.id%}#comments" type="submit" class="btn btn-outline-info ml-auto">Add Comment</a>
-                            {% endif %}
+            
+            
+            {% if user.is_authenticated %}
+                <h5>Comments: </h5>
+                <article class="content-section mb-0 border-0 w-90 bg-transparent">
+                    <div class="row">                                                
+                        <div class="col-3 col-md-1">
+                            <img src="{{user.profile.image.url}}" class="rounded-circle mr-2 profile-preview-img ">                
                         </div>
-                    </form>
-                </div>
-            </article>
+                        <div class="col-9">
+                            <form action="" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}                            
+                                <fieldset class="form-group">
+                                    {{form.content}}                    
+                                </fieldset>                                                                                    
+                                <div class="form-group ">                                
+                                    <button type="submit" class="btn btn-outline-info ml-auto">Add Comment</button>                                
+                                </div>
+                            </form>
+                        </div>                        
+                    </div>
+                </article>
+            {% else %}
+            <h5 >Comments: <a href="{% url 'login'%}?next={% url 'post-detail' object.id%}#comments" type="submit" class="btn btn-sm btn-outline-info ml-2">
+                Add Comment
+            </a></h5>
+            {% endif %}
+
             {% for comment in object.comments.all  %}
-                <article class="media content-section w-90 ml-4 border-0 bg-transparent">
-                    <img src="{{comment.author.profile.image.url}}" class="rounded-circle mr-2" height="55px" width="55px">
+                <article class="content-section mb-0 mt-0 media w-90 border-0 bg-transparent">
+                    <img src="{{comment.author.profile.image.url}}" class="rounded-circle mr-2 profile-preview-img">
                     <div class="media-body">
                         <div class="article-metadata">
                             <a class="mr-2" href="{% url 'user-posts' comment.author.username %}">{{ comment.author }}</a>

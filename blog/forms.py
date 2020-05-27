@@ -6,8 +6,6 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ('author','content', 'post',)
         
-        # widgets = {
-        #     'author': forms.HiddenInput(),
-        #     'post': forms.HiddenInput(),
-        #     'date_commented': forms.HiddenInput()
-        # }
+        widgets = {
+            'content': forms.Textarea(attrs={'rows':0, 'cols':0}),
+        }

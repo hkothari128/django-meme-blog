@@ -7,6 +7,8 @@ from django.views.generic.edit import FormMixin
 from django.urls import reverse
 from .models import Post
 from .forms import CommentForm
+from requests import get as url_get
+from json import loads as load_json
 
 # posts = [
 #     {
@@ -42,6 +44,8 @@ class PostListView(ListView):
         current_user = self.request.user
         context = super().get_context_data(**kwargs)
         context['posts_commented_on'] = [] if current_user.is_anonymous else list(current_user.comments.values_list('post__id',flat=True))
+        dadJokeJson = load_json(url_get('https://icanhazdadjoke.com/slack').content)
+        context['dadjoke'] = dadJokeJson['attachments'][0]['text']
         # context['posts_liked'] = [] if current_user.is_anonymous else list(current_user.likes.values_list('post__id',flat=True))
         return context
 
